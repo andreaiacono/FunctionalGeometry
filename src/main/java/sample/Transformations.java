@@ -1,6 +1,5 @@
 package  sample;
 
-import javafx.scene.Node;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
 
@@ -19,51 +18,62 @@ public class Transformations {
      */
 
     // translations
-    private static SVGPath translate(SVGPath image, double x, double y) {
+    private static Shape translate(Shape image, double x, double y) {
         image.setTranslateX(x);
         image.setTranslateY(y);
         return image;
     }
-    public static SVGPath translateX(SVGPath image, double x) { return translate(image, x, 0); }
-    public static SVGPath translateY(SVGPath image, double y) { return translate(image, 0, y); }
-    public static SVGPath translateXY(SVGPath image, double x, double y) { return translate(image, x, y); }
+    public static Shape translateX(Shape image, double x) { return translate(image, x, 0); }
+    public static Shape translateY(Shape image, double y) { return translate(image, 0, y); }
+    public static Shape translateXY(Shape image, double x, double y) { return translate(image, x, y); }
 
     // rotations
-    private static SVGPath rotate(SVGPath image, double angle) {
+    private static Shape rotate(Shape image, double angle) {
         image.setRotate(angle);
         return image;
     }
-    public static SVGPath rotate90(SVGPath image) { return rotate(image, -90); }
-    public static SVGPath rotate45(SVGPath image) { return rotate(image, -45); }
+    public static Shape rotate90(Shape image) { return rotate(image, -90); }
+    public static Shape rotate45(Shape image) { return rotate(image, -45); }
 
 
     // compositions
-    public static SVGPath flip(SVGPath image) {
+    public static Shape flip(Shape image) {
         image.setRotate(-90d);
         return image;
     }
 
-    public static SVGPath beside(SVGPath image1, SVGPath image2) {
-        image1.setScaleX(-0.5d);
-        image2.setScaleX(-0.5d);
-        image2 = translateX(image2, 100);
-        SVGPath newPath = new SVGPath();
-        newPath.setContent(image1.getContent() + " " + image2.getContent());
-        return newPath;
+//    public static Shape beside(Shape image1, Shape image2) {
+//        image1.setScaleX(-0.5d);
+//        image2.setScaleX(-0.5d);
+//        image2 = translateX(image2, 100);
+//        SVGPath newPath = new SVGPath();
+//        newPath.setContent(image1.getContent() + " " + image2.getContent());
+//        return newPath;
+//    }
+
+    public static Shape above(Shape image1, Shape image2) {
+//        Shape temp1 = clone(image1);
+//        Shape temp2 = clone(image2);
+        image1.setTranslateY(100);
+        image2.setTranslateY(-100);
+        image2.setScaleY(0.5d);
+        image1.setScaleY(0.5d);
+        return Shape.union(image1, image2);
     }
 
-    public static Node above(SVGPath image1, SVGPath image2) {
-        SVGPath temp1 = clone(image1);
-        SVGPath temp2 = clone(image2);
-        temp1.setScaleY(-0.5d);
-        temp2.setScaleY(-0.5d);
-        temp2 = translateY(image2, 100);
-        return Shape.union(temp1, temp2);
+    public static Shape beside(Shape image1, Shape image2) {
+//        Shape temp1 = clone(image1);
+//        Shape temp2 = clone(image2);
+        image1.setTranslateX(100);
+        image2.setTranslateX(-50);
+        image2.setScaleX(0.5d);
+        image1.setScaleX(0.5d);
+        return Shape.union(image1, image2);
     }
 
-    private static SVGPath clone(SVGPath image) {
+    private static Shape clone(Shape image) {
         SVGPath newImage = new SVGPath();
-        newImage.setContent(image.getContent());
+        newImage.setContent(((SVGPath)image).getContent());
         return newImage;
     }
 
