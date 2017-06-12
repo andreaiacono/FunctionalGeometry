@@ -5,17 +5,18 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.SVGPath;
+import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
 
 import java.util.Arrays;
 
-import static sample.Transformations.above;
-import static sample.Transformations.beside;
+import static sample.Transformations.*;
 
 public class Main extends Application {
 
     static String LIZARD_FILENAME = "/lizard.path";
     static String LAMBDA_FILENAME = "/lambda.path";
+    static String FISH_FILENAME = "/fish.path";
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -48,14 +49,23 @@ public class Main extends Application {
         lizard3.setTranslateX(centerx - 198);
         lizard3.setTranslateY(centery - 320);
 
-        SVGPath lambda = new SVGPath();
-        lambda.setContent(Utils.readResource(LAMBDA_FILENAME));
+        SVGPath fish = new SVGPath();
+        fish.setContent(Utils.readResource(FISH_FILENAME));
 
-        Group root = new Group(beside(lambda, above(lambda, lambda)));
-//        Group root = new Group(lizard1, lizard2, lizard3);
+        Shape fish2 = flipVertical(rotate45(half(fish)));
+        Shape fish3 = rotate90(rotate90(rotate90((fish2))));
 
-        Scene scene = new Scene(root, 1000, 1000);
-        stage.setScene(scene);
+        Shape t = Shape.union(fish, Shape.union(fish2, fish3));
+
+        Shape u = Shape.union(
+                            Shape.union(fish2, rotate90(fish2)),
+                            Shape.union(rotate180(fish2), rotate270(fish2))
+                        );
+
+        Shape image = beside(fish, above(rotate45(fish), flipHorizontal(fish)));
+
+//        new Group(lizard1, lizard2, lizard3);
+        stage.setScene(new Scene(new Group(u), 1000, 650));
         stage.show();
     }
 
