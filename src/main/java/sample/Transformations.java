@@ -77,4 +77,14 @@ public class Transformations {
         return newImage;
     }
 
+    public static Shape flipHorizontal(Shape image) {
+        image.setScaleX(-1);
+        return image;
+    }
+
+    public static Shape flipVertical(Shape image) {
+        image.setScaleY(-1);
+        return image;
+    }
+
 }
