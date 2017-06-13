@@ -1,11 +1,18 @@
-package  sample;
+package sample;
 
+import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
 
 public class Transformations {
 
+    private static Shape blank = new SVGPath();
+
+    public static Shape union(Shape image1, Shape image2) {
+        return Shape.union(image1, image2);
+    }
+
     private static Shape clone(Shape image) {
-        return Shape.union(image, image);
+        return union(image, image);
     }
 
     public static Shape flipHorizontal(Shape image) {
@@ -21,14 +28,20 @@ public class Transformations {
     }
 
     // translations
-    private static Shape translate(Shape image, double x, double y) {
+    public static Shape translate(Shape image, double x, double y) {
         Shape temp = clone(image);
         temp.setTranslateX(x);
         temp.setTranslateY(y);
         return temp;
     }
-    public static Shape translateX(Shape image, double x) { return translate(image, x, 0); }
-    public static Shape translateY(Shape image, double y) { return translate(image, 0, y); }
+
+    public static Shape translateX(Shape image, double x) {
+        return translate(image, x, 0);
+    }
+
+    public static Shape translateY(Shape image, double y) {
+        return translate(image, 0, y);
+    }
 
     // size
     private static Shape scale(Shape image, double x, double y) {
@@ -38,19 +51,33 @@ public class Transformations {
         return temp;
     }
 
-    public static Shape half(Shape image) { return scale(image, 0.5, 0.5); }
+    public static Shape half(Shape image) {
+        return scale(image, 0.71, 0.71);
+    }
 
     // rotations
     private static Shape rotate(Shape image, double angle) {
         Shape temp = clone(image);
         temp.setRotate(angle);
-        translate(temp, temp.getLayoutBounds().getWidth()/2, temp.getLayoutBounds().getHeight()/2);
+        translate(temp, temp.getLayoutBounds().getWidth() / 2, temp.getLayoutBounds().getHeight() / 2);
         return temp;
     }
-    public static Shape rotate270(Shape image) { return rotate(image, 270); }
-    public static Shape rotate180(Shape image) { return rotate(image, 180); }
-    public static Shape rotate90(Shape image) { return rotate(image, 90); }
-    public static Shape rotate45(Shape image) { return rotate(image, 45); }
+
+    public static Shape rotate270(Shape image) {
+        return rotate(image, 270);
+    }
+
+    public static Shape rotate180(Shape image) {
+        return rotate(image, 180);
+    }
+
+    public static Shape rotate90(Shape image) {
+        return rotate(image, 90);
+    }
+
+    public static Shape rotate45(Shape image) {
+        return rotate(image, 45);
+    }
 
     // compositions
     public static Shape above(Shape image1, Shape image2) {
@@ -58,9 +85,9 @@ public class Transformations {
         Shape temp2 = clone(image2);
         translateY(temp1, 100);
         translateY(temp2, -100);
-        scale(temp2, 0.5d,1);
-        scale(temp1, 0.5d,1);
-        return Shape.union(temp1, temp2);
+        scale(temp2, 0.5d, 1);
+        scale(temp1, 0.5d, 1);
+        return union(temp1, temp2);
     }
 
     public static Shape beside(Shape image1, Shape image2) {
@@ -68,8 +95,54 @@ public class Transformations {
         Shape temp2 = clone(image2);
         translateX(temp1, 100);
         translateX(temp2, -50);
-        scale(temp2, 0.5d,1);
-        scale(temp1, 0.5d,1);
-        return Shape.union(temp1, temp2);
+        scale(temp2, 0.5d, 1);
+        scale(temp1, 0.5d, 1);
+        return union(temp1, temp2);
     }
+
+    public Shape quartet(Shape image1, Shape image2, Shape image3, Shape image4) {
+        return above(beside(image1, image2), beside(image3, image4));
+    }
+
+    public Shape cycle(Shape image) {
+        return quartet(
+                image,
+                rotate90(image),
+                rotate180(image),
+                rotate270(image)
+        );
+    }
+
+    public Shape side1(Shape image) {
+        return quartet(blank, blank, rotate90(image), image);
+    }
+
+    public Shape side(Shape image, int n) {
+        if (n == 1) {
+            return side1(image);
+        }
+        return quartet(side(image, n - 1), side(image, n - 1), rotate90(image), image);
+    }
+
+    public Shape corner1(Shape image) {
+        return quartet(blank, blank, blank, image);
+    }
+
+    public Shape corner(Shape image, int n) {
+        if (n == 1) {
+            return corner1(image);
+        }
+        return quartet(corner(image, n - 1), side(image, n - 1), rotate90(side(image, n - 1)), image);
+    }
+
+//    public Shape nonet(Shape image1_1, Shape image1_2, Shape image1_3,
+//                       Shape image2_1, Shape image2_2, Shape image2_3,
+//                       Shape image3_1, Shape image3_2, Shape image3_3) {
+//        return nonet(corner(n), side(n), rot(rot(rot(corner(n)))),
+//                rot(side(n)), u, rot(rot(rot(side(n)))),
+//                rot(corner(n)), rot(rot(side(n))), rot(rot(corner(n))))
+//        return above(1, 2, beside(1, 2, p, beside(1, 1, q, r)),
+//                above(1, 1, beside(1, 2, s, beside(1, 1, t, u)),
+//                        beside(1, 2, v, beside(1, 1, w, x))))
+//    }
 }

@@ -49,23 +49,38 @@ public class Main extends Application {
         lizard3.setTranslateX(centerx - 198);
         lizard3.setTranslateY(centery - 320);
 
-        SVGPath fish = new SVGPath();
-        fish.setContent(Utils.readResource(FISH_FILENAME));
+        SVGPath fish1 = new SVGPath();
+        fish1.setContent(Utils.readResource(FISH_FILENAME));
+        Shape fish = translate(fish1, 100, 60);
 
         Shape fish2 = flipVertical(rotate45(half(fish)));
         Shape fish3 = rotate90(rotate90(rotate90((fish2))));
 
-        Shape t = Shape.union(fish, Shape.union(fish2, fish3));
+        Shape t = union(
+                    fish,
+                    Shape.union(
+                            translate(fish2, fish2.getLayoutBounds().getWidth()-20, -16), //-fish2.getLayoutBounds().getWidth()),
+                            translate(fish3, fish2.getLayoutBounds().getWidth()*0.45-10, -fish3.getLayoutBounds().getHeight()*0.35- 4)
+                            )
+        );
 
-        Shape u = Shape.union(
-                            Shape.union(fish2, rotate90(fish2)),
-                            Shape.union(rotate180(fish2), rotate270(fish2))
-                        );
+        Shape u = union(
+                            union(
+                                    fish2,
+                                    rotate90(fish2)
+                            ),
+                            union(
+                                    rotate180(fish2),
+                                    rotate270(fish2)
+                            )
+        );
+
+
 
         Shape image = beside(fish, above(rotate45(fish), flipHorizontal(fish)));
 
 //        new Group(lizard1, lizard2, lizard3);
-        stage.setScene(new Scene(new Group(u), 1000, 650));
+        stage.setScene(new Scene(new Group(t), 400, 350));
         stage.show();
     }
 
