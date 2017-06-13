@@ -11,7 +11,7 @@ public class Transformations {
         return Shape.union(image1, image2);
     }
 
-    private static Shape clone(Shape image) {
+    public static Shape clone(Shape image) {
         return union(image, image);
     }
 
@@ -100,11 +100,11 @@ public class Transformations {
         return union(temp1, temp2);
     }
 
-    public Shape quartet(Shape image1, Shape image2, Shape image3, Shape image4) {
+    public static Shape quartet(Shape image1, Shape image2, Shape image3, Shape image4) {
         return above(beside(image1, image2), beside(image3, image4));
     }
 
-    public Shape cycle(Shape image) {
+    public static Shape cycle(Shape image) {
         return quartet(
                 image,
                 rotate90(image),
@@ -113,22 +113,22 @@ public class Transformations {
         );
     }
 
-    public Shape side1(Shape image) {
+    public static Shape side1(Shape image) {
         return quartet(blank, blank, rotate90(image), image);
     }
 
-    public Shape side(Shape image, int n) {
+    public static Shape side(Shape image, int n) {
         if (n == 1) {
             return side1(image);
         }
         return quartet(side(image, n - 1), side(image, n - 1), rotate90(image), image);
     }
 
-    public Shape corner1(Shape image) {
+    public static Shape corner1(Shape image) {
         return quartet(blank, blank, blank, image);
     }
 
-    public Shape corner(Shape image, int n) {
+    public static Shape corner(Shape image, int n) {
         if (n == 1) {
             return corner1(image);
         }

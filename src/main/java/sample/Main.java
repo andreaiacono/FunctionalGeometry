@@ -39,7 +39,7 @@ public class Main extends Application {
         lizard2.setStroke(Paint.valueOf("black"));
         lizard2.setFill(Paint.valueOf("8855FF"));
         lizard2.setTranslateX(centerx - 376);
-        lizard2.setTranslateY(centery+ 12);
+        lizard2.setTranslateY(centery + 12);
 
         SVGPath lizard3 = new SVGPath();
         lizard3.setContent(Utils.readResource(LIZARD_FILENAME));
@@ -57,34 +57,33 @@ public class Main extends Application {
         Shape fish3 = rotate90(rotate90(rotate90((fish2))));
 
         Shape t = union(
-                    fish,
-                    Shape.union(
-                            translate(fish2, fish2.getLayoutBounds().getWidth()-20, -16), //-fish2.getLayoutBounds().getWidth()),
-                            translate(fish3, fish2.getLayoutBounds().getWidth()*0.45-10, -fish3.getLayoutBounds().getHeight()*0.35- 4)
-                            )
+                fish,
+                Shape.union(
+                        translate(fish2, fish2.getLayoutBounds().getWidth() - 20, -17), //-fish2.getLayoutBounds().getWidth()),
+                        translate(fish3, fish2.getLayoutBounds().getWidth() * 0.45 - 10, -fish3.getLayoutBounds().getHeight() * 0.35 - 5)
+                )
         );
 
         Shape u = union(
-                            union(
-                                    fish2,
-                                    rotate90(fish2)
-                            ),
-                            union(
-                                    rotate180(fish2),
-                                    rotate270(fish2)
-                            )
+                union(
+                        translate(fish2, 100, 0),
+                        translate(rotate90(fish2), 20, 80)
+                ),
+                union(
+                        translate(rotate180(fish2), -60, 0),
+                        translate(rotate270(fish2), 20, -80)
+                )
         );
-
 
 
         Shape image = beside(fish, above(rotate45(fish), flipHorizontal(fish)));
 
 //        new Group(lizard1, lizard2, lizard3);
-        stage.setScene(new Scene(new Group(t), 400, 350));
+        stage.setScene(new Scene(new Group(quartet(Transformations.clone(u), Transformations.clone(u), Transformations.clone(u), Transformations.clone(u))), 400, 350));
         stage.show();
     }
 
-    public static void main(String args[]){
+    public static void main(String args[]) {
         System.out.println(Arrays.toString(args));
         if (args.length == 1) {
             LIZARD_FILENAME = args[0];
