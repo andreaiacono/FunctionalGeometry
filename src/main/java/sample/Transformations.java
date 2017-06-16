@@ -83,20 +83,20 @@ public class Transformations {
     public static Shape above(Shape image1, Shape image2) {
         Shape temp1 = clone(image1);
         Shape temp2 = clone(image2);
-        translateY(temp1, 100);
-        translateY(temp2, -100);
-        scale(temp2, 0.5d, 1);
-        scale(temp1, 0.5d, 1);
+        temp1.setTranslateY(58);
+        temp2.setTranslateY(-68);
+        temp1.setScaleY(0.5d);
+        temp2.setScaleY(0.5d);
         return union(temp1, temp2);
     }
 
     public static Shape beside(Shape image1, Shape image2) {
         Shape temp1 = clone(image1);
         Shape temp2 = clone(image2);
-        translateX(temp1, 100);
-        translateX(temp2, -50);
-        scale(temp2, 0.5d, 1);
-        scale(temp1, 0.5d, 1);
+        temp1.setTranslateX(58);
+        temp2.setTranslateX(-68);
+        temp2.setScaleX(0.5d);
+        temp1.setScaleX(0.5d);
         return union(temp1, temp2);
     }
 
@@ -106,9 +106,9 @@ public class Transformations {
 
     public static Shape cycle(Shape image) {
         return quartet(
-                image,
                 rotate90(image),
                 rotate180(image),
+                image,
                 rotate270(image)
         );
     }
