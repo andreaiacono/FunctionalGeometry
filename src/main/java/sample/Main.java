@@ -63,23 +63,29 @@ public class Main extends Application {
                         translate(fish3, fish2.getLayoutBounds().getWidth() * 0.45 - 10, -fish3.getLayoutBounds().getHeight() * 0.35 - 5)
                 )
         );
+//
+//        Shape u = union(
+//                union(
+//                        translate(fish2, 100, 0),
+//                        translate(rotate90(fish2), 20, 80)
+//                ),
+//                union(
+//                        translate(rotate180(fish2), -60, 0),
+//                        translate(rotate270(fish2), 20, -80)
+//                )
+//        );
+        Shape v = cycle((t));
+////
+//
+//        Shape image = beside(fish, above(rotate45(fish), flipHorizontal(fish)));
 
-        Shape u = union(
-                union(
-                        translate(fish2, 100, 0),
-                        translate(rotate90(fish2), 20, 80)
-                ),
-                union(
-                        translate(rotate180(fish2), -60, 0),
-                        translate(rotate270(fish2), 20, -80)
-                )
-        );
-
-
-        Shape image = beside(fish, above(rotate45(fish), flipHorizontal(fish)));
-
+//        Shape quartet = quartet(Transformations.clone(u), Transformations.clone(u), Transformations.clone(u), Transformations.clone(u));
+//        Shape quartet = quartet(Transformations.clone(u), Transformations.clone(u), Transformations.clone(u), Transformations.clone(u));
 //        new Group(lizard1, lizard2, lizard3);
-        stage.setScene(new Scene(new Group(quartet(Transformations.clone(u), Transformations.clone(u), Transformations.clone(u), Transformations.clone(u))), 400, 350));
+        Group root = new Group(quartet(v, v,v, v));
+
+        stage.setScene(new Scene(root, 400, 350));
+//        stage.setScene(new Scene(new Group(above(fish1, fish1)), 400, 350));
         stage.show();
     }
 
