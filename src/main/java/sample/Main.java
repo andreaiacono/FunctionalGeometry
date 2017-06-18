@@ -1,6 +1,7 @@
 package sample;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.paint.Paint;
@@ -14,6 +15,7 @@ import static sample.Transformations.*;
 
 public class Main extends Application {
 
+    private static final double INITIAL_SIZE = 600;
     static String LIZARD_FILENAME = "/lizard.path";
     static String LAMBDA_FILENAME = "/lambda.path";
     static String FISH_FILENAME = "/fish.path";
@@ -63,7 +65,7 @@ public class Main extends Application {
                         translate(fish3, fish2.getLayoutBounds().getWidth() * 0.45 - 10, -fish3.getLayoutBounds().getHeight() * 0.35 - 5)
                 )
         );
-//
+
 //        Shape u = union(
 //                union(
 //                        translate(fish2, 100, 0),
@@ -84,7 +86,18 @@ public class Main extends Application {
 //        new Group(lizard1, lizard2, lizard3);
         Group root = new Group(quartet(v, v,v, v));
 
-        stage.setScene(new Scene(root, 400, 350));
+        stage.setScene(new Scene(root, INITIAL_SIZE, INITIAL_SIZE));
+        ChangeListener<Number> stageSizeListener = (observable, oldValue, newValue) -> {
+            double newSize = Math.min(stage.getHeight(), stage.getWidth());
+            double ratio = newSize / INITIAL_SIZE;
+            root.setScaleX(ratio);
+            root.setScaleY(ratio);
+            root.setTranslateX(ratio*50);
+            root.setTranslateY(ratio*50);
+        };
+
+        stage.widthProperty().addListener(stageSizeListener);
+        stage.heightProperty().addListener(stageSizeListener);
 //        stage.setScene(new Scene(new Group(above(fish1, fish1)), 400, 350));
         stage.show();
     }
