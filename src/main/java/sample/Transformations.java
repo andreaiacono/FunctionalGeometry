@@ -12,7 +12,7 @@ public class Transformations {
     }
 
     public static Shape clone(Shape image) {
-        return union(image, image);
+        return union(image, blank);
     }
 
     public static Shape flipHorizontal(Shape image) {

@@ -1,13 +1,19 @@
 package sample;
 
+import javafx.animation.RotateTransition;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
+import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.util.Arrays;
 
@@ -54,10 +60,11 @@ public class Main extends Application {
         SVGPath fish1 = new SVGPath();
         fish1.setContent(Utils.readResource(FISH_FILENAME));
         Shape fish = translate(fish1, 100, 60);
-
+//        Shape fish = Transformations.clone(fish1);
+//
         Shape fish2 = flipVertical(rotate45(half(fish)));
         Shape fish3 = rotate90(rotate90(rotate90((fish2))));
-
+//
         Shape t = union(
                 fish,
                 Shape.union(
@@ -84,7 +91,16 @@ public class Main extends Application {
 //        Shape quartet = quartet(Transformations.clone(u), Transformations.clone(u), Transformations.clone(u), Transformations.clone(u));
 //        Shape quartet = quartet(Transformations.clone(u), Transformations.clone(u), Transformations.clone(u), Transformations.clone(u));
 //        new Group(lizard1, lizard2, lizard3);
+        Bounds bounds = fish.getLayoutBounds();
+        Rectangle rectangle = new Rectangle(bounds.getMinX(), bounds.getMinY(), bounds.getWidth(), bounds.getHeight());
+        rectangle.setFill(Color.TRANSPARENT);
+        rectangle.setStroke(Paint.valueOf("00FF00"));
+//        Group root = new Group(fish, rectangle);
         Group root = new Group(quartet(v, v,v, v));
+//        Group root = new Group(t);
+
+//
+        System.out.println(fish.getLayoutBounds());
 
         stage.setScene(new Scene(root, INITIAL_SIZE, INITIAL_SIZE));
         ChangeListener<Number> stageSizeListener = (observable, oldValue, newValue) -> {
@@ -99,7 +115,16 @@ public class Main extends Application {
         stage.widthProperty().addListener(stageSizeListener);
         stage.heightProperty().addListener(stageSizeListener);
 //        stage.setScene(new Scene(new Group(above(fish1, fish1)), 400, 350));
+
+
+        RotateTransition rt = new RotateTransition(Duration.seconds(10), root);
+        rt.setToAngle(720);
+        rt.setCycleCount(Timeline.INDEFINITE);
+        rt.setAutoReverse(true);
+        rt.play();
+
         stage.show();
+
     }
 
     public static void main(String args[]) {
