@@ -1,5 +1,6 @@
 package sample;
 
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
 
@@ -59,7 +60,6 @@ public class Transformations {
     private static Shape rotate(Shape image, double angle) {
         Shape temp = clone(image);
         temp.setRotate(angle);
-        translate(temp, temp.getLayoutBounds().getWidth() / 2, temp.getLayoutBounds().getHeight() / 2);
         return temp;
     }
 
@@ -106,10 +106,10 @@ public class Transformations {
 
     public static Shape cycle(Shape image) {
         return quartet(
-                rotate90(image),
-                rotate180(image),
-                image,
-                rotate270(image)
+                translate(rotate90(image), 16, 2),
+                translate(rotate180(image), 10, 20),
+                translate(image, 0, -10),
+                translate(rotate270(image), -2,10 )
         );
     }
 
@@ -135,14 +135,20 @@ public class Transformations {
         return quartet(corner(image, n - 1), side(image, n - 1), rotate90(side(image, n - 1)), image);
     }
 
-//    public Shape nonet(Shape image1_1, Shape image1_2, Shape image1_3,
-//                       Shape image2_1, Shape image2_2, Shape image2_3,
-//                       Shape image3_1, Shape image3_2, Shape image3_3) {
-//        return nonet(corner(n), side(n), rot(rot(rot(corner(n)))),
-//                rot(side(n)), u, rot(rot(rot(side(n)))),
-//                rot(corner(n)), rot(rot(side(n))), rot(rot(corner(n))))
-//        return above(1, 2, beside(1, 2, p, beside(1, 1, q, r)),
-//                above(1, 1, beside(1, 2, s, beside(1, 1, t, u)),
-//                        beside(1, 2, v, beside(1, 1, w, x))))
-//    }
+    public static Shape nonet(Shape image1_1, Shape image1_2, Shape image1_3,
+                       Shape image2_1, Shape image2_2, Shape image2_3,
+                       Shape image3_1, Shape image3_2, Shape image3_3) {
+        
+        return above(beside(image1_1, beside(image1_2, image1_3)),
+                above(beside(image2_1, beside(image2_2, image2_3)),
+                        beside(image3_1, beside(image3_2, image3_3))));
+        
+    }
+    
+    public static Shape squareLimit(Shape image, int n) {
+        return nonet(corner(image, n), side(image, n), rotate90(rotate90(rotate90(corner(image, n)))),
+                rotate90(side(image, n)), image, rotate90(rotate90(rotate90(side(image, n)))),
+                rotate90(corner(image, n)), rotate90(rotate90(side(image, n))), rotate90(rotate90(corner(image, n))));
+
+    }
 }

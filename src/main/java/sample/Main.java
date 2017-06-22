@@ -4,9 +4,11 @@ import javafx.animation.RotateTransition;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
+import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
@@ -25,84 +27,62 @@ public class Main extends Application {
     static String LIZARD_FILENAME = "/lizard.path";
     static String LAMBDA_FILENAME = "/lambda.path";
     static String FISH_FILENAME = "/fish.path";
+    boolean isRotating = false;
+    RotateTransition rt;
 
     @Override
     public void start(Stage stage) throws Exception {
 
         stage.setTitle("Functional Geometry");
-        int centerx = 400;
-        int centery = 300;
-
-        // creates a SVGPath object
-        SVGPath lizard1 = new SVGPath();
-        lizard1.setContent(Utils.readResource(LIZARD_FILENAME));
-        lizard1.setStroke(Paint.valueOf("black"));
-        lizard1.setFill(Paint.valueOf("99FFAA"));
-        lizard1.setRotate(240);
-        lizard1.setTranslateX(centerx);
-        lizard1.setTranslateY(centery);
-
-        SVGPath lizard2 = new SVGPath();
-        lizard2.setContent(Utils.readResource(LIZARD_FILENAME));
-        lizard2.setStroke(Paint.valueOf("black"));
-        lizard2.setFill(Paint.valueOf("8855FF"));
-        lizard2.setTranslateX(centerx - 376);
-        lizard2.setTranslateY(centery + 12);
-
-        SVGPath lizard3 = new SVGPath();
-        lizard3.setContent(Utils.readResource(LIZARD_FILENAME));
-        lizard3.setStroke(Paint.valueOf("black"));
-        lizard3.setFill(Paint.valueOf("FF5577"));
-        lizard3.setRotate(120);
-        lizard3.setTranslateX(centerx - 198);
-        lizard3.setTranslateY(centery - 320);
-
         SVGPath fish1 = new SVGPath();
         fish1.setContent(Utils.readResource(FISH_FILENAME));
-        Shape fish = translate(fish1, 100, 60);
-//        Shape fish = Transformations.clone(fish1);
-//
-        Shape fish2 = flipVertical(rotate45(half(fish)));
+
+        Shape fish = Transformations.clone(fish1);
+        Shape fish2 = flipVertical(rotate45(half(fish1)));
         Shape fish3 = rotate90(rotate90(rotate90((fish2))));
-//
+
         Shape t = union(
                 fish,
                 Shape.union(
-                        translate(fish2, fish2.getLayoutBounds().getWidth() - 20, -17), //-fish2.getLayoutBounds().getWidth()),
-                        translate(fish3, fish2.getLayoutBounds().getWidth() * 0.45 - 10, -fish3.getLayoutBounds().getHeight() * 0.35 - 5)
+                        translate(fish2, 145, -15), //-fish2.getLayoutBounds().getWidth()),
+                        translate(fish3, 65, -95)
                 )
         );
 
-//        Shape u = union(
-//                union(
-//                        translate(fish2, 100, 0),
-//                        translate(rotate90(fish2), 20, 80)
-//                ),
-//                union(
-//                        translate(rotate180(fish2), -60, 0),
-//                        translate(rotate270(fish2), 20, -80)
-//                )
-//        );
+        Shape u = union(
+                union(
+                        translate(fish2, 100, 0),
+                        translate(rotate90(fish2), 20, 80)
+                ),
+                union(
+                        translate(rotate180(fish2), -60, 0),
+                        translate(rotate270(fish2), 20, -80)
+                )
+        );
+
+
         Shape v = cycle((t));
-////
+//
 //
 //        Shape image = beside(fish, above(rotate45(fish), flipHorizontal(fish)));
 
 //        Shape quartet = quartet(Transformations.clone(u), Transformations.clone(u), Transformations.clone(u), Transformations.clone(u));
 //        Shape quartet = quartet(Transformations.clone(u), Transformations.clone(u), Transformations.clone(u), Transformations.clone(u));
-//        new Group(lizard1, lizard2, lizard3);
-        Bounds bounds = fish.getLayoutBounds();
+        Bounds bounds = fish.getBoundsInParent();
         Rectangle rectangle = new Rectangle(bounds.getMinX(), bounds.getMinY(), bounds.getWidth(), bounds.getHeight());
         rectangle.setFill(Color.TRANSPARENT);
         rectangle.setStroke(Paint.valueOf("00FF00"));
 //        Group root = new Group(fish, rectangle);
-        Group root = new Group(quartet(v, v,v, v));
-//        Group root = new Group(t);
+//        Group root = new Group(u);
+//        Group root = new Group(quartet(u, u, u, u));
+//        Group root = new Group(side(fish, 2));
+        Group root = new Group(corner(fish, 2));
+//        Group root = new Group(squareLimit(u, 1));
 
 //
         System.out.println(fish.getLayoutBounds());
-
-        stage.setScene(new Scene(root, INITIAL_SIZE, INITIAL_SIZE));
+        Scene scene = new Scene(root, INITIAL_SIZE, INITIAL_SIZE);
+        stage.setScene(scene);
         ChangeListener<Number> stageSizeListener = (observable, oldValue, newValue) -> {
             double newSize = Math.min(stage.getHeight(), stage.getWidth());
             double ratio = newSize / INITIAL_SIZE;
@@ -116,16 +96,28 @@ public class Main extends Application {
         stage.heightProperty().addListener(stageSizeListener);
 //        stage.setScene(new Scene(new Group(above(fish1, fish1)), 400, 350));
 
-
-        RotateTransition rt = new RotateTransition(Duration.seconds(10), root);
+        rt = new RotateTransition(Duration.seconds(20), root);
         rt.setToAngle(720);
         rt.setCycleCount(Timeline.INDEFINITE);
         rt.setAutoReverse(true);
-        rt.play();
 
+
+        scene.addEventFilter(MouseEvent.MOUSE_PRESSED, rotationHandler);
         stage.show();
 
     }
+
+    EventHandler rotationHandler = new EventHandler<MouseEvent>() {
+        @Override
+        public void handle(MouseEvent mouseEvent) {
+            if (isRotating) {
+                rt.stop();
+            } else {
+                rt.play();
+            }
+            isRotating = !isRotating;
+        }
+    };
 
     public static void main(String args[]) {
         System.out.println(Arrays.toString(args));
